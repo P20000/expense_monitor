@@ -11,11 +11,16 @@ from telegram.ext import ApplicationBuilder, CommandHandler, CallbackQueryHandle
 # ========== CONFIG ==========
 SPREADSHEET_ID = '19ttgTtnU1AZyTwNmiafSGiQx6R3hJqhemqioIkwaSYM'
 RANGE_NAME = 'Sheet1!A:C'  # assuming columns: Date, Category, Amount
-TOKEN = '7930593247:AAHlZo5V11LlG-bK8YO8Lu9MCFwYUBSFudg'
+TOKEN = os.getenv('TELEGRAM_BOT_TOKEN')  # Set this via Render env variable
 
 # ========== GOOGLE SHEETS AUTH ==========
 SCOPES = ['https://www.googleapis.com/auth/spreadsheets.readonly']
-service_account_info = json.loads(os.environ['GOOGLE_CREDS_JSON'])
+GOOGLE_CREDS_JSON = os.getenv('GOOGLE_CREDS_JSON')
+
+if not GOOGLE_CREDS_JSON:
+    raise ValueError("GOOGLE_CREDS_JSON environment variable is not set!")
+
+service_account_info = json.loads(GOOGLE_CREDS_JSON)
 creds = Credentials.from_service_account_info(service_account_info, scopes=SCOPES)
 sheets_service = build('sheets', 'v4', credentials=creds)
 
@@ -80,6 +85,9 @@ async def button_handler(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
 # ========== MAIN BOT APP ==========
 if __name__ == '__main__':
+    if not TOKEN:
+        raise ValueError("TELEGRAM_BOT_TOKEN environment variable is not set!")
+
     app = ApplicationBuilder().token(TOKEN).build()
 
     app.add_handler(CommandHandler('start', start))
