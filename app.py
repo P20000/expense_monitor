@@ -12,11 +12,11 @@ from telegram.ext import ApplicationBuilder, CommandHandler, CallbackQueryHandle
 SPREADSHEET_ID = '19ttgTtnU1AZyTwNmiafSGiQx6R3hJqhemqioIkwaSYM'
 RANGE_NAME = 'Sheet1!A:C'  # assuming columns: Date, Category, Amount
 TOKEN = '7930593247:AAHlZo5V11LlG-bK8YO8Lu9MCFwYUBSFudg'
-CREDENTIALS_FILE = '"E:\programming\python projects\api keys\silent-cider-459817-q7-ded5fe07600b.json"'
 
 # ========== GOOGLE SHEETS AUTH ==========
 SCOPES = ['https://www.googleapis.com/auth/spreadsheets.readonly']
-creds = Credentials.from_service_account_file(CREDENTIALS_FILE, scopes=SCOPES)
+service_account_info = json.loads(os.environ['GOOGLE_CREDS_JSON'])
+creds = Credentials.from_service_account_info(service_account_info, scopes=SCOPES)
 sheets_service = build('sheets', 'v4', credentials=creds)
 
 # ========== FUNCTION TO FETCH DATA ==========
